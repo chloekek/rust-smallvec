@@ -81,6 +81,7 @@
 #![cfg_attr(feature = "specialization", allow(incomplete_features))]
 #![cfg_attr(feature = "specialization", feature(specialization))]
 #![cfg_attr(feature = "may_dangle", feature(dropck_eyepatch))]
+#![cfg_attr(feature = "trusted_len", feature(trusted_len))]
 #![deny(missing_docs)]
 
 #[doc(hidden)]
@@ -119,6 +120,9 @@ use core::marker::PhantomData;
 
 #[cfg(feature = "write")]
 use std::io;
+
+#[cfg(feature = "trusted_len")]
+use core::iter::TrustedLen;
 
 /// Creates a [`SmallVec`] containing the arguments.
 ///
@@ -1937,6 +1941,9 @@ impl<A: Array> DoubleEndedIterator for IntoIter<A> {
 
 impl<A: Array> ExactSizeIterator for IntoIter<A> {}
 impl<A: Array> FusedIterator for IntoIter<A> {}
+
+#[cfg(feature = "trusted_len")]
+unsafe impl<A: Array> TrustedLen for IntoIter<A> {}
 
 impl<A: Array> IntoIter<A> {
     /// Returns the remaining items of this iterator as a slice.
